@@ -8,8 +8,9 @@
  * @format
  */
 
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import {
+  Button,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -26,6 +27,8 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+
+import NativeMyFirstTurboModule from './src/NativeMyFirstTurboModule';
 
 const Section: React.FC<{
   title: string;
@@ -62,8 +65,19 @@ const App = () => {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
+  const [text, setText] = useState('');
+
+  const onPress = useCallback(async () => {
+    const {result} =  await NativeMyFirstTurboModule.getString("WooD")
+    setText(result);
+  }, []);
+
   return (
     <SafeAreaView style={backgroundStyle}>
+      <View>
+        <Button title='Tap Me' onPress={onPress} />
+        <Text style={{ color: 'red' }}>{text}</Text>
+      </View>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"

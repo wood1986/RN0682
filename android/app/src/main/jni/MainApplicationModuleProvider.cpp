@@ -1,6 +1,7 @@
 #include "MainApplicationModuleProvider.h"
 
 #include <rncore.h>
+#include <myfirstturbomodule.h>
 
 namespace facebook {
 namespace react {
@@ -11,12 +12,12 @@ std::shared_ptr<TurboModule> MainApplicationModuleProvider(
   // Here you can provide your own module provider for TurboModules coming from
   // either your application or from external libraries. The approach to follow
   // is similar to the following (for a library called `samplelibrary`:
-  //
-  // auto module = samplelibrary_ModuleProvider(moduleName, params);
-  // if (module != nullptr) {
-  //    return module;
-  // }
-  // return rncore_ModuleProvider(moduleName, params);
+
+  auto module = myfirstturbomodule_ModuleProvider(moduleName, params);
+  if (module != nullptr) {
+     return module;
+  }
+
   return rncore_ModuleProvider(moduleName, params);
 }
 

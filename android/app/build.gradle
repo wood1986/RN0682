@@ -1,5 +1,15 @@
 apply plugin: "com.android.application"
 
+apply plugin: "com.facebook.react"
+
+react {
+    libraryName = "myfirstturbomodule"
+    root = rootProject.file("..")
+    jsRootDir = rootProject.file("../src/")
+    reactNativeDir = rootProject.file("../node_modules/react-native")
+    codegenDir = rootProject.file("../node_modules/react-native-codegen/")
+}
+
 import com.android.build.OutputFile
 import org.apache.tools.ant.taskdefs.condition.Os
 
@@ -79,7 +89,7 @@ import org.apache.tools.ant.taskdefs.condition.Os
  */
 
 project.ext.react = [
-    enableHermes: false,  // clean and rebuild if changing
+    enableHermes: true,  // clean and rebuild if changing
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
@@ -194,7 +204,7 @@ android {
         afterEvaluate {
             // If you wish to add a custom TurboModule or component locally,
             // you should uncomment this line.
-            // preBuild.dependsOn("generateCodegenArtifactsFromSchema")
+            preBuild.dependsOn("generateCodegenArtifactsFromSchema")
             preDebugBuild.dependsOn(packageReactNdkDebugLibs)
             preReleaseBuild.dependsOn(packageReactNdkReleaseLibs)
 

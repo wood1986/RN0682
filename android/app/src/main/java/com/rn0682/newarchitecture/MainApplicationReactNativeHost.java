@@ -7,23 +7,31 @@ import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.ReactPackageTurboModuleManagerDelegate;
+import com.facebook.react.TurboReactPackage;
 import com.facebook.react.bridge.JSIModulePackage;
 import com.facebook.react.bridge.JSIModuleProvider;
 import com.facebook.react.bridge.JSIModuleSpec;
 import com.facebook.react.bridge.JSIModuleType;
 import com.facebook.react.bridge.JavaScriptContextHolder;
+import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.UIManager;
 import com.facebook.react.fabric.ComponentFactory;
 import com.facebook.react.fabric.CoreComponentsRegistry;
 import com.facebook.react.fabric.EmptyReactNativeConfig;
 import com.facebook.react.fabric.FabricJSIModuleProvider;
+import com.facebook.react.module.annotations.ReactModule;
+import com.facebook.react.module.model.ReactModuleInfo;
+import com.facebook.react.module.model.ReactModuleInfoProvider;
+import com.facebook.react.turbomodule.core.interfaces.TurboModule;
 import com.facebook.react.uimanager.ViewManagerRegistry;
 import com.rn0682.BuildConfig;
 import com.rn0682.newarchitecture.components.MainComponentsRegistry;
 import com.rn0682.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A {@link ReactNativeHost} that helps you load everything needed for the New Architecture, both
@@ -51,6 +59,44 @@ public class MainApplicationReactNativeHost extends ReactNativeHost {
     //     packages.add(new TurboReactPackage() { ... });
     // If you have custom Fabric Components, their ViewManagers should also be loaded here
     // inside a ReactPackage.
+
+    packages.add(new TurboReactPackage() {
+      @Override
+      public NativeModule getModule(String name, ReactApplicationContext reactContext) {
+        if (name.equals(MyFirstTurboModule.NAME)) {
+          return new MyFirstTurboModule(reactContext);
+        } else {
+          return null;
+        }
+      }
+
+      @Override
+      public ReactModuleInfoProvider getReactModuleInfoProvider() {
+        Class<? extends NativeModule>[] moduleList =
+            new Class[] {
+                MyFirstTurboModule.class,
+            };
+
+        final Map<String, ReactModuleInfo> reactModuleInfoMap = new HashMap<>();
+        for (Class<? extends NativeModule> moduleClass : moduleList) {
+          ReactModule reactModule = moduleClass.getAnnotation(ReactModule.class);
+
+          reactModuleInfoMap.put(
+              reactModule.name(),
+              new ReactModuleInfo(
+                  reactModule.name(),
+                  moduleClass.getName(),
+                  reactModule.canOverrideExistingModule(),
+                  reactModule.needsEagerInit(),
+                  reactModule.hasConstants(),
+                  reactModule.isCxxModule(),
+                  TurboModule.class.isAssignableFrom(moduleClass)));
+        }
+
+        return () -> reactModuleInfoMap;
+      }
+    });
+
     return packages;
   }
 

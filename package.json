@@ -42,5 +42,14 @@
       "json",
       "node"
     ]
+  },
+  "codegenConfig": {
+    "libraries": [
+      {
+        "name": "MyFirstTurboModuleSpec",
+        "type": "modules",
+        "jsSrcsDir": "./src"
+      }
+    ]
   }
 }
